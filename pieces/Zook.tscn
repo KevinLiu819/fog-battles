@@ -1,0 +1,10 @@
+[gd_scene load_steps=4 format=3 uid="uid://b625ygl5mcl0e"]
+
+[ext_resource type="PackedScene" uid="uid://dvutw3gjrljc" path="res://Piece.tscn" id="1_8qvf5"]
+[ext_resource type="Texture2D" uid="uid://diw6g0wnetwpi" path="res://sprites/amg1_fr1.jpeg" id="2_ncshj"]
+[ext_resource type="Script" path="res://pieces/Zook.gd" id="3_kxrjl"]
+
+[node name="Zook" instance=ExtResource("1_8qvf5")]
+texture = ExtResource("2_ncshj")
+region_enabled = false
+script = ExtResource("3_kxrjl")

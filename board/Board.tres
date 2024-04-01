@@ -1,0 +1,16 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://b76kk3pie33d4"]
+
+[ext_resource type="Texture2D" uid="uid://cfnjsi4um344u" path="res://board/board_tilemap_v2.png" id="1_41l76"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_c06fu"]
+texture = ExtResource("1_41l76")
+texture_region_size = Vector2i(150, 150)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+
+[resource]
+tile_size = Vector2i(150, 150)
+sources/1 = SubResource("TileSetAtlasSource_c06fu")
+tile_proxies/coords_level = [[18, Vector2i(0, 0)], [29, Vector2i(0, 0)], [19, Vector2i(0, 0)], [29, Vector2i(1, 0)], [20, Vector2i(0, 0)], [29, Vector2i(2, 0)], [21, Vector2i(0, 0)], [29, Vector2i(3, 0)], [22, Vector2i(0, 0)], [29, Vector2i(4, 0)], [23, Vector2i(0, 0)], [29, Vector2i(5, 0)], [24, Vector2i(0, 0)], [29, Vector2i(6, 0)], [25, Vector2i(0, 0)], [29, Vector2i(7, 0)], [26, Vector2i(0, 0)], [29, Vector2i(8, 0)], [27, Vector2i(0, 0)], [29, Vector2i(9, 0)], [28, Vector2i(0, 0)], [29, Vector2i(10, 0)], [30, Vector2i(0, 0)], [32, Vector2i(0, 0)], [30, Vector2i(1, 0)], [32, Vector2i(1, 0)], [30, Vector2i(2, 0)], [32, Vector2i(2, 0)], [30, Vector2i(3, 0)], [32, Vector2i(3, 0)], [30, Vector2i(4, 0)], [32, Vector2i(4, 0)], [30, Vector2i(5, 0)], [32, Vector2i(5, 0)], [30, Vector2i(6, 0)], [32, Vector2i(6, 0)], [30, Vector2i(7, 0)], [32, Vector2i(7, 0)], [30, Vector2i(8, 0)], [32, Vector2i(8, 0)], [30, Vector2i(9, 0)], [32, Vector2i(9, 0)], [30, Vector2i(10, 0)], [32, Vector2i(10, 0)], [31, Vector2i(0, 0)], [32, Vector2i(0, 1)], [31, Vector2i(1, 0)], [32, Vector2i(1, 1)], [31, Vector2i(2, 0)], [32, Vector2i(2, 1)], [31, Vector2i(3, 0)], [32, Vector2i(3, 1)], [31, Vector2i(4, 0)], [32, Vector2i(4, 1)], [31, Vector2i(5, 0)], [32, Vector2i(5, 1)], [31, Vector2i(6, 0)], [32, Vector2i(6, 1)], [31, Vector2i(7, 0)], [32, Vector2i(7, 1)], [31, Vector2i(8, 0)], [32, Vector2i(8, 1)], [31, Vector2i(9, 0)], [32, Vector2i(9, 1)], [31, Vector2i(10, 0)], [32, Vector2i(10, 1)]]

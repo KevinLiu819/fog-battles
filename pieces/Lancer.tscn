@@ -1,0 +1,10 @@
+[gd_scene load_steps=4 format=3 uid="uid://cn6b35frmtbh"]
+
+[ext_resource type="PackedScene" uid="uid://dvutw3gjrljc" path="res://Piece.tscn" id="1_ba2sq"]
+[ext_resource type="Texture2D" uid="uid://bs0kjqmhtqniy" path="res://sprites/bmg1_fr1.jpeg" id="2_mg2rg"]
+[ext_resource type="Script" path="res://pieces/Lancer.gd" id="3_urahm"]
+
+[node name="Lancer" instance=ExtResource("1_ba2sq")]
+texture = ExtResource("2_mg2rg")
+region_enabled = false
+script = ExtResource("3_urahm")
