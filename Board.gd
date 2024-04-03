@@ -1,25 +1,25 @@
 extends TileMap
 
+const COMPUTER_DELAY = 0.25
+
 var piece_scene : PackedScene = preload("res://Piece.tscn")
 var zook_scene : PackedScene = preload("res://pieces/Zook.tscn")
 var doomba_scene : PackedScene = preload("res://pieces/Doomba.tscn")
 var lancer_scene : PackedScene = preload("res://pieces/Lancer.tscn")
 var rook_scene : PackedScene = preload("res://pieces/Rook.tscn")
+
 var pieces = Array()
 var last_move = Array()
+var player_move = true
 
-var white_to_move = true
-var selected_square = null
-var piece_selected = null
+var rng = RandomNumberGenerator.new()
 
-signal generate_move_label(move_text)
 signal save_board_state()
-signal display_promotion_screen(color, square)
 
 
 func save() -> Dictionary:
 	return {
-		"white_to_move": white_to_move,
+		"player_move": player_move,
 		"last_move": last_move,
 		"pieces": save_pieces()
 	}
@@ -36,7 +36,7 @@ func load_board(save_dict):
 		piece.queue_free()
 	pieces.clear()
 	# Load board
-	white_to_move = save_dict["white_to_move"]
+	player_move = save_dict["player_move"]
 	# Update last move
 	last_move = save_dict["last_move"]
 	# Load pieces
@@ -77,6 +77,11 @@ func create_piece(square, type, color, moves = 0, visibility = true):
 	add_child(piece)
 	return piece
 
+func delete_piece(piece):
+	pieces.erase(piece)
+	piece.queue_free()
+
+
 func valid_moves(piece) -> Array:
 	var valid_moves = Array()
 	for move in piece.moves_list:
@@ -87,22 +92,12 @@ func valid_moves(piece) -> Array:
 			if out_of_bounds(square):
 				break
 			var next_piece = get_piece(square)
-			if next_piece == null or next_piece.color != white_to_move:
+			if next_piece == null or next_piece.color != player_move:
 				valid_moves.append(square)
 			if next_piece != null:
 				break
 			count += 1
 	return valid_moves
-
-
-func _on_doomba_effect(piece):
-	var square = piece.square
-	for i in range(square.x - 1, square.x + 2):
-		for j in range(square.y - 1, square.y + 2):
-			var target_piece = get_piece(Vector2i(i, j))
-			if target_piece != null and target_piece.color != piece.color:
-				target_piece.hp -= 1
-
 
 func make_move(piece, next_square):
 	var next_piece = get_piece(next_square)
@@ -113,12 +108,28 @@ func make_move(piece, next_square):
 		if next_piece.hp > 0:
 			piece.hp = 0
 		piece.on_melee_attack()
+	# Post-move specials
 	piece.after_move_attack()
-	white_to_move = not white_to_move
+	player_move = not player_move
+	# TODO: update vision
+	if not player_move:
+		await get_tree().create_timer(COMPUTER_DELAY).timeout
+		computer_move()
 
-func delete_piece(piece):
-	pieces.erase(piece)
-	piece.queue_free()
+func computer_move():
+	var computer_pieces = []
+	for piece in pieces:
+		if piece.color == player_move:
+			computer_pieces.append(piece)
+	if computer_pieces.is_empty():
+		print("You win!")
+		return
+	var random_piece_index = rng.randi_range(0, computer_pieces.size() - 1)
+	var chosen_piece = computer_pieces[random_piece_index]
+	var chosen_piece_moves = valid_moves(chosen_piece)
+	var random_move_index = rng.randi_range(0, chosen_piece_moves.size() - 1)
+	var chosen_square = chosen_piece_moves[random_move_index]
+	make_move(chosen_piece, chosen_square)
 
 func undo_move(piece, prev_square, next_square_piece, flip_turn):
 	piece.position = map_to_local(prev_square)
@@ -128,7 +139,27 @@ func undo_move(piece, prev_square, next_square_piece, flip_turn):
 		next_square_piece.visible = true
 		pieces.append(next_square_piece)
 	if flip_turn:
-		white_to_move = not white_to_move
+		player_move = not player_move
+
+
+func update_vision():
+	for piece in pieces:
+		if piece.color:
+			pass
+	pass
+
+"""
+Random effects
+"""
+
+func _on_doomba_effect(piece):
+	var square = piece.square
+	for i in range(square.x - 1, square.x + 2):
+		for j in range(square.y - 1, square.y + 2):
+			var target_piece = get_piece(Vector2i(i, j))
+			if target_piece != null and target_piece.color != piece.color:
+				target_piece.hp -= 1
+
 
 func out_of_bounds(square) -> bool:
 	return not get_used_cells(0).has(square)

@@ -7,6 +7,8 @@ var color : bool
 var hp : int
 var max_hp : int
 var attack : int
+# Array of arrays of size 3 specifying how the piece can move 
+# e.g. [[0, 1, 3]] means the piece can move up to 3 units in the positive y direction
 var moves_list : Array
 var valid_moves : Array
 
@@ -23,21 +25,22 @@ func save() -> Dictionary:
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	position = get_parent().map_to_local(square)
 	hp = max_hp
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	if Input.is_action_pressed("click") and follow_mouse:
 		position = get_global_mouse_position()
+	else:
+		position = get_parent().map_to_local(square)
 	if hp <= 0:
 		on_death()
 
 func _input(event):
 	var mouse_pos = get_global_mouse_position()
 	var mouse_square = get_parent().local_to_map(mouse_pos)
-	if event.is_action_pressed("click") \
-			and mouse_square == square and get_parent().white_to_move == color:
+	if event.is_action_pressed("click") and color \
+			and mouse_square == square and get_parent().player_move == color:
 		handle_select_piece(mouse_square)
 	elif event.is_action_released("click") and follow_mouse:
 		handle_release_piece(mouse_square)
@@ -55,7 +58,6 @@ func handle_release_piece(mouse_square):
 	z_index = 0
 	if valid_moves.has(mouse_square):
 		get_parent().make_move(self, mouse_square)
-	position = get_parent().map_to_local(square)
 
 
 func on_melee_attack():
