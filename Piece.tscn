@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://dvutw3gjrljc"]
+[gd_scene load_steps=7 format=3 uid="uid://dvutw3gjrljc"]
 
 [ext_resource type="Texture2D" uid="uid://dgintpjd4k6mi" path="res://sprites/characters_v2.png" id="1_glf81"]
 [ext_resource type="Script" path="res://Piece.gd" id="2_vnrnd"]
 [ext_resource type="Script" path="res://Health.gd" id="3_6u8ei"]
+[ext_resource type="Script" path="res://HealthText.gd" id="4_mh6j5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0hlpd"]
 bg_color = Color(0.788235, 0, 0.176471, 1)
@@ -13,13 +14,14 @@ bg_color = Color(0.0745098, 0.862745, 0.47451, 1)
 [node name="Piece" type="Sprite2D"]
 scale = Vector2(3.5, 3.5)
 texture = ExtResource("1_glf81")
+offset = Vector2(0, -5)
 region_enabled = true
 region_rect = Rect2(0, 0, 32, 32)
 script = ExtResource("2_vnrnd")
 
 [node name="Health" type="ProgressBar" parent="."]
 offset_left = -16.0
-offset_top = 17.0
+offset_top = 10.0
 offset_right = 16.0
 offset_bottom = 20.0
 theme_override_styles/background = SubResource("StyleBoxFlat_0hlpd")
@@ -27,3 +29,11 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_53imn")
 value = 50.0
 show_percentage = false
 script = ExtResource("3_6u8ei")
+
+[node name="HealthText" type="RichTextLabel" parent="."]
+offset_left = -6.0
+offset_top = 9.0
+offset_right = 34.0
+offset_bottom = 49.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("4_mh6j5")

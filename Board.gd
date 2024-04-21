@@ -1,6 +1,7 @@
 extends TileMap
 
 const COMPUTER_DELAY = 0.25
+const VISION_DIR = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 0], [0, 1], [1, -1], [1, 0], [1, 1]]
 
 var piece_scene : PackedScene = preload("res://Piece.tscn")
 var zook_scene : PackedScene = preload("res://pieces/Zook.tscn")
@@ -46,18 +47,19 @@ func load_board(save_dict):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# process_mode = Node.PROCESS_MODE_PAUSABLE
-	create_piece(Vector2i(0, 0), "Z", true)
-	create_piece(Vector2i(7, 0), "Z", false)
-	create_piece(Vector2i(1, 1), "D", true)
-	create_piece(Vector2i(6, 6), "D", false)
-	create_piece(Vector2i(1, 2), "L", true)
-	create_piece(Vector2i(5, 6), "L", false)
-	create_piece(Vector2i(3, 2), "R", true)
-	create_piece(Vector2i(7, 6), "R", false)
+	create_piece(Vector2i(0, 7), "D", true)
+	create_piece(Vector2i(1, 7), "D", true)
+	create_piece(Vector2i(2, 7), "D", true)
+	create_piece(Vector2i(3, 7), "D", true)
+	for i in range(8):
+		create_piece(Vector2i(i, 0), "L", false)
+		create_piece(Vector2i(i, 1), "R", false)
+	# create_piece(Vector2i(6, 6), "D", false)
+	# create_piece(Vector2i(7, 6), "R", false)
+	update_vision()
 
 
 func create_piece(square, type, color, moves = 0, visibility = true):
-	# var piece = piece_scene.instantiate()
 	var piece
 	if type == "Z":
 		piece = zook_scene.instantiate()
@@ -107,11 +109,12 @@ func make_move(piece, next_square):
 		next_piece.hp -= piece.attack
 		if next_piece.hp > 0:
 			piece.hp = 0
-		piece.on_melee_attack()
+		await piece.on_melee_attack()
 	# Post-move specials
-	piece.after_move_attack()
+	await piece.after_move_attack()
 	player_move = not player_move
 	# TODO: update vision
+	update_vision()
 	if not player_move:
 		await get_tree().create_timer(COMPUTER_DELAY).timeout
 		computer_move()
@@ -119,7 +122,7 @@ func make_move(piece, next_square):
 func computer_move():
 	var computer_pieces = []
 	for piece in pieces:
-		if piece.color == player_move:
+		if not piece.color and not valid_moves(piece).is_empty():
 			computer_pieces.append(piece)
 	if computer_pieces.is_empty():
 		print("You win!")
@@ -143,10 +146,17 @@ func undo_move(piece, prev_square, next_square_piece, flip_turn):
 
 
 func update_vision():
+	clear_layer(1)
+	var vision_squares = Dictionary()
 	for piece in pieces:
 		if piece.color:
-			pass
-	pass
+			for dir in VISION_DIR:
+				var next_square = piece.square + Vector2i(dir[0], dir[1])
+				if not out_of_bounds(next_square):
+					vision_squares[next_square] = true
+	for square in get_used_cells(0):
+		if not vision_squares.has(square):
+			set_cell(1, square, 1, Vector2i(0, 0))
 
 """
 Random effects
